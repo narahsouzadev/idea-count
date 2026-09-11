@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-// Manter o último valor
-import 'package:shared_preferences/shared_preferences.dart';
 import '../widgets/counter_button.dart';
+import '../widgets/counter_display.dart';
+import '../services/counter_storage_service.dart';
 
 /// Tela principal do Idea Count.
 ///
@@ -25,64 +25,39 @@ class CounterPage extends StatefulWidget {
 /// Guarda o valor atual do contador e atualiza a interface
 /// sempre que esse valor mudar.
 class _CounterPageState extends State<CounterPage> {
-  // Manter o último valor
-  // Chave para identificar o valor no armazenamento interno
-  static const String _counterKey = 'saved_counter_value';
-  
-  /// Valor inicial do contador.
-  ///
-  /// Conforme definido no produto, o contador começa sempre em zero.
+  final CounterStorageService _storageService = CounterStorageService();
   int _count = 0;
-
-  /// Controla a escala visual do número para o efeito de impulso no clique.
-  double _numberScale = 1.0;
-
-  /// Controla o deslocamento vertical do número para o efeito de salto ao resetar.
-  double _numberOffsetY = 0.0;
 
   @override
   void initState() {
     super.initState();
-    _loadCounter(); // Busca o valor salvo assim que a tela abre
+    _loadCounter();
   }
 
-  /// Carrega o valor salvo no SharedPreferences.
   Future<void> _loadCounter() async {
-    final prefs = await SharedPreferences.getInstance();
+    final value = await _storageService.loadCounter();
+    if (!mounted) return;
     setState(() {
-      _count = prefs.getInt(_counterKey) ?? 0;
+      _count = value;
     });
   }
 
-  /// Salva o valor atual do contador.
   Future<void> _saveCounter(int value) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setInt(_counterKey, value);
+    await _storageService.saveCounter(value);
   }
 
-  /// Incrementa o contador em 1.
   void _increment() {
-    setState(() {
-      _count++;
-    });
-    _saveCounter(_count); // Salva o último valor
-    _triggerScaleAnimation(1.08); // Impulso de ampliação (cresce)
+    setState(() => _count++);
+    _saveCounter(_count);
   }
 
-  /// Decrementa o contador em 1.
-  ///
-  /// O contador não permite valores negativos.
   void _decrement() {
     if (_count > 0) {
-      setState(() {
-        _count--;
-      });
-      _saveCounter(_count); // <-- Linha adicionada
-      _triggerScaleAnimation(0.92); // Impulso de redução (encolhe)
+      setState(() => _count--);
+      _saveCounter(_count);
     }
   }
 
-/// Exibe um diálogo de confirmação para evitar que o usuário zere o contador por engano.
   void _showResetConfirmationDialog() {
     showDialog(
       context: context,
@@ -93,17 +68,13 @@ class _CounterPageState extends State<CounterPage> {
             'Esta ação irá redefinir a sua contagem atual para zero. Deseja continuar?',
           ),
           actions: [
-            // Cancela a ação e fecha a janela sem alterar o contador.
             TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
+              onPressed: () => Navigator.of(context).pop(),
               child: const Text(
                 'Cancelar',
                 style: TextStyle(color: Colors.grey),
               ),
             ),
-            // Confirma a ação, fecha o diálogo e aciona o reset.
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
@@ -123,47 +94,9 @@ class _CounterPageState extends State<CounterPage> {
     );
   }
 
-  /// Reseta o valor do contador para zero e persiste a alteração no armazenamento.
-  ///
-  /// O botão de reset faz parte do design criado pelo Stitch.
   void _reset() {
-    setState(() {
-      _count = 0;
-    });
+    setState(() => _count = 0);
     _saveCounter(0);
-    _triggerResetJumpAnimation(); // Dispara o salto vertical do número
-  }
-
-  /// Dispara a animação de escala temporária no número.
-  void _triggerScaleAnimation(double targetScale) {
-    setState(() {
-      _numberScale = targetScale;
-    });
-
-    // Retorna a escala para o tamanho normal (1.0) após 100 milissegundos
-    Future.delayed(const Duration(milliseconds: 100), () {
-      if (mounted) {
-        setState(() {
-          _numberScale = 1.0;
-        });
-      }
-    });
-  }
-
-  /// Dispara a animação de salto vertical no número ao zerar o contador.
-  void _triggerResetJumpAnimation() {
-    setState(() {
-      _numberOffsetY = -20.0; // Desloca o número para cima em 20 pixels
-    });
-
-    // Retorna o número para a posição original após 150 milissegundos
-    Future.delayed(const Duration(milliseconds: 150), () {
-      if (mounted) {
-        setState(() {
-          _numberOffsetY = 0.0;
-        });
-      }
-    });
   }
 
   @override
@@ -172,9 +105,6 @@ class _CounterPageState extends State<CounterPage> {
       body: SafeArea(
         child: Column(
           children: [
-            // Cabeçalho da aplicação.
-            //
-            // Mantido simples para seguir a proposta minimalista.
             const Padding(
               padding: EdgeInsets.only(top: 24),
               child: Text(
@@ -187,65 +117,26 @@ class _CounterPageState extends State<CounterPage> {
                 ),
               ),
             ),
-
-            // Área central contendo o número do contador.
             Expanded(
-              child: Center(
-                child: AnimatedContainer(
-                  duration: const Duration(milliseconds: 150),
-                  curve: Curves.easeOut,
-                  transform: Matrix4.translationValues(0, _numberOffsetY, 0),
-                  child: AnimatedScale(
-                    scale: _numberScale,
-                    duration: const Duration(milliseconds: 100),
-                    curve: Curves.easeOut,
-                    child: Text(
-                      '$_count',
-
-                      // O número é o elemento principal da interface.
-                      style: const TextStyle(
-                        fontSize: 120,
-                        fontWeight: FontWeight.w700,
-                        letterSpacing: -4,
-                        color: Color(0xFF1A1A1A),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
+              child: Center(child: CounterDisplay(count: _count)),
             ),
-
-            // Área inferior dos controles.
             Padding(
-              padding: const EdgeInsets.only(
-                bottom: 40,
-                left: 24,
-                right: 24,
-              ),
+              padding: const EdgeInsets.only(bottom: 40, left: 24, right: 24),
               child: Column(
                 children: [
-                  // Botões principais + e -.
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      CounterButton(
-                        icon: Icons.remove,
-                        onPressed: _decrement,
-                      ),
-
+                      CounterButton(icon: Icons.remove, onPressed: _decrement),
                       const SizedBox(width: 32),
-
                       CounterButton(
                         icon: Icons.add,
                         onPressed: _increment,
-                        isPrimary: true, // <-- Ativa a cor amarela
+                        isPrimary: true,
                       ),
                     ],
                   ),
-
                   const SizedBox(height: 16),
-
-                  // Botão secundário de reset.
                   OutlinedButton(
                     onPressed: _showResetConfirmationDialog,
                     style: OutlinedButton.styleFrom(
