@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../widgets/counter_button.dart';
 import '../widgets/counter_display.dart';
+import '../widgets/reset_confirmation_dialog.dart';
 import '../services/counter_storage_service.dart';
 
 /// Main screen of Idea Count.
@@ -61,38 +62,9 @@ class _CounterPageState extends State<CounterPage> {
   }
 
   void _showResetConfirmationDialog() {
-    showDialog(
+    showDialog<void>(
       context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Reset counter?'),
-          content: const Text(
-            'This action will reset your current count to zero. Do you wish to continue?',
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: const Text(
-                'Cancel',
-                style: TextStyle(color: Colors.grey),
-              ),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-                _reset();
-              },
-              child: const Text(
-                'Reset',
-                style: TextStyle(
-                  color: Color(0xFFD32F2F),
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-          ],
-        );
-      },
+      builder: (_) => ResetConfirmationDialog(onConfirm: _reset),
     );
   }
 
