@@ -1,59 +1,59 @@
 import 'package:flutter/material.dart';
 
-/// Centraliza todas as configurações visuais do aplicativo.
+/// Centralizes all the visual configurations of the application.
 ///
-/// Manter o tema em um arquivo separado evita espalhar cores,
-/// estilos e configurações visuais pelo projeto.
+/// Keeping the theme in a separate file avoids scattering colors,
+/// styles, and visual configurations throughout the project.
 ///
-/// Dessa forma, futuras alterações na identidade visual da
-/// Idea36 Labs podem ser feitas em um único lugar.
+/// This way, future changes to the visual identity of
+/// Idea36 Labs can be made in a single place.
 class AppTheme {
-  /// Tema principal da aplicação.
+  /// Main theme of the application.
   ///
-  /// Atualmente o Idea Count possui apenas uma versão clara,
-  /// seguindo a proposta de:
-  /// - fundo branco;
-  /// - alto contraste;
-  /// - amarelo Idea36 como cor de ação.
+  /// Currently, Idea Count only has a light version,
+  /// following the proposal of:
+  /// - white background;
+  /// - high contrast;
+  /// - Idea36 yellow as the action color.
   static ThemeData get lightTheme {
     return ThemeData(
-      // Utiliza Material 3, padrão atual do Flutter.
+      // Uses Material 3, the current Flutter standard.
       useMaterial3: true,
 
-      // Cor base utilizada pelo sistema de componentes.
+      // Base color used by the component system.
       //
-      // O amarelo representa a identidade visual da Idea36 Labs.
+      // Yellow represents the visual identity of Idea36 Labs.
       colorScheme: ColorScheme.fromSeed(
         seedColor: const Color(0xFFFFC107),
         brightness: Brightness.light,
       ),
 
-      // Cor padrão do fundo das telas.
+      // Default screen background color.
       scaffoldBackgroundColor: Colors.white,
 
-      // Configuração global dos textos.
+      // Global text configuration.
       textTheme: const TextTheme(
-        // Estilo usado futuramente para o número principal.
+        // Style meant to be used for the main number.
         //
-        // O contador terá um tamanho maior definido no widget
-        // específico, mas esta configuração estabelece a base.
+        // The counter will have a larger size defined in the specific
+        // widget, but this configuration establishes the base.
         displayLarge: TextStyle(
           fontFamily: 'Inter',
           fontWeight: FontWeight.w700,
           color: Color(0xFF1A1A1A),
         ),
 
-        // Estilo para textos menores, como títulos e botões.
+        // Style for smaller texts, such as titles and buttons.
         bodyMedium: TextStyle(
           fontFamily: 'Inter',
           color: Color(0xFF1A1A1A),
         ),
       ),
 
-      // Configuração padrão dos botões elevados.
+      // Default configuration for elevated buttons.
       //
-      // Os botões personalizados do contador terão estilos próprios,
-      // mas esta configuração mantém consistência com o Material 3.
+      // Custom counter buttons will have their own styles,
+      // but this configuration maintains consistency with Material 3.
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
           elevation: 0,

@@ -3,27 +3,27 @@ import '../widgets/counter_button.dart';
 import '../widgets/counter_display.dart';
 import '../services/counter_storage_service.dart';
 
-/// Tela principal do Idea Count.
+/// Main screen of Idea Count.
 ///
-/// Responsável por:
-/// - exibir o valor atual do contador;
-/// - controlar o estado do contador;
-/// - organizar os elementos visuais da tela.
+/// Responsible for:
+/// - displaying the current counter value;
+/// - controlling the counter state;
+/// - organizing the visual elements of the screen.
 ///
-/// Como o aplicativo é simples, o gerenciamento de estado será feito
-/// utilizando StatefulWidget + setState().
+/// Since the application is simple, state management will be handled
+/// using StatefulWidget + setState().
 class CounterPage extends StatefulWidget {
-  /// Construtor padrão da tela.
+  /// Default constructor for the screen.
   const CounterPage({super.key});
 
   @override
   State<CounterPage> createState() => _CounterPageState();
 }
 
-/// Estado interno da CounterPage.
+/// Internal state of CounterPage.
 ///
-/// Guarda o valor atual do contador e atualiza a interface
-/// sempre que esse valor mudar.
+/// Holds the current counter value and updates the interface
+/// whenever this value changes.
 class _CounterPageState extends State<CounterPage> {
   final CounterStorageService _storageService = CounterStorageService();
   int _count = 0;
@@ -63,15 +63,15 @@ class _CounterPageState extends State<CounterPage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Zerar contador?'),
+          title: const Text('Reset counter?'),
           content: const Text(
-            'Esta ação irá redefinir a sua contagem atual para zero. Deseja continuar?',
+            'This action will reset your current count to zero. Do you wish to continue?',
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
               child: const Text(
-                'Cancelar',
+                'Cancel',
                 style: TextStyle(color: Colors.grey),
               ),
             ),
@@ -81,7 +81,7 @@ class _CounterPageState extends State<CounterPage> {
                 _reset();
               },
               child: const Text(
-                'Zerar',
+                'Reset',
                 style: TextStyle(
                   color: Color(0xFFD32F2F),
                   fontWeight: FontWeight.bold,

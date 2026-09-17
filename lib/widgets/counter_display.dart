@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
-/// Widget responsável por exibir o número do contador e gerenciar suas próprias animações.
+/// Widget responsible for displaying the counter number and managing its own animations.
 ///
-/// Isolar este widget garante que apenas o texto seja reconstruído (rebuild)
-/// durante as animações, poupando a [CounterPage] de reconstruções desnecessárias.
+/// Isolating this widget ensures that only the text is rebuilt
+/// during animations, saving [CounterPage] from unnecessary rebuilds.
 class CounterDisplay extends StatefulWidget {
-  /// Valor atual do contador a ser renderizado.
+  /// Current counter value to be rendered.
   final int count;
 
   const CounterDisplay({super.key, required this.count});
@@ -16,19 +16,19 @@ class CounterDisplay extends StatefulWidget {
 
 class _CounterDisplayState extends State<CounterDisplay>
     with TickerProviderStateMixin {
-  /// Controlador responsável pela animação de crescimento/encolhimento (+ e -).
+  /// Controller responsible for the growth/shrink animation (+ and -).
   late final AnimationController _scaleController;
 
-  /// Controlador responsável pela animação de pulo (reset).
+  /// Controller responsible for the jump animation (reset).
   late final AnimationController _jumpController;
 
-  /// Define se a escala alvo será maior (incremento) ou menor (decremento).
+  /// Defines whether the target scale will be larger (increment) or smaller (decrement).
   double _scaleTarget = 1.08;
 
   @override
   void initState() {
     super.initState();
-    // Inicialização dos controladores com durações curtas para efeito de "impulso"
+    // Initialization of controllers with short durations for a "momentum" effect.
     _scaleController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 100),
@@ -39,33 +39,33 @@ class _CounterDisplayState extends State<CounterDisplay>
     );
   }
 
-  /// Observa mudanças na propriedade [count] vindas do widget pai.
-  /// Dispara a animação correta dependendo da mudança de estado.
+  /// Observes changes in the [count] property coming from the parent widget.
+  /// Triggers the correct animation depending on the state change.
   @override
   void didUpdateWidget(CounterDisplay oldWidget) {
     super.didUpdateWidget(oldWidget);
 
-    // Só anima se o valor realmente mudou
+    // Only animates if the value actually changed.
     if (widget.count != oldWidget.count) {
       if (widget.count == 0 && oldWidget.count != 0) {
-        _triggerJump(); // Dispara o pulo ao zerar
+        _triggerJump(); // Triggers the jump when resetting.
       } else {
-        _triggerScale(widget.count > oldWidget.count); // Cresce ou encolhe
+        _triggerScale(widget.count > oldWidget.count); // Grows or shrinks.
       }
     }
   }
 
-  /// Executa o ciclo de ir e voltar da animação de escala.
+  /// Executes the back-and-forth cycle of the scale animation.
   Future<void> _triggerScale(bool isIncrement) async {
     _scaleTarget = isIncrement ? 1.08 : 0.92;
     await _scaleController.forward(from: 0.0);
 
-    // Checagem obrigatória de ciclo de vida antes da reversão assíncrona
+    // Mandatory lifecycle check before asynchronous reversal.
     if (!mounted) return;
     _scaleController.reverse();
   }
 
-  /// Executa o ciclo de ir e voltar da animação de pulo.
+  /// Executes the back-and-forth cycle of the jump animation.
   Future<void> _triggerJump() async {
     await _jumpController.forward(from: 0.0);
 
@@ -73,7 +73,7 @@ class _CounterDisplayState extends State<CounterDisplay>
     _jumpController.reverse();
   }
 
-  /// Libera os recursos da GPU descartando os Tickers ao desmontar o widget.
+  /// Frees GPU resources by discarding Tickers when unmounting the widget.
   @override
   void dispose() {
     _scaleController.dispose();
@@ -83,11 +83,11 @@ class _CounterDisplayState extends State<CounterDisplay>
 
   @override
   Widget build(BuildContext context) {
-    // O AnimatedBuilder reconstrói apenas o Transform em sincronia com os frames da animação
+    // The AnimatedBuilder rebuilds only the Transform in sync with the animation frames.
     return AnimatedBuilder(
       animation: Listenable.merge([_scaleController, _jumpController]),
       builder: (context, child) {
-        // Interpola a escala e o deslocamento Y baseando-se no valor atual dos controladores
+        // Interpolates the scale and Y offset based on the current value of the controllers.
         final scale =
             1.0 +
             (_scaleTarget - 1.0) *
@@ -103,7 +103,7 @@ class _CounterDisplayState extends State<CounterDisplay>
           ),
         );
       },
-      // O Text estático é passado como child para não ser reconstruído a cada frame da animação
+      // The static Text is passed as a child so it's not rebuilt on every animation frame.
       child: Text(
         '${widget.count}',
         style: const TextStyle(

@@ -1,26 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-/// Botão circular utilizado pelos controles do contador.
+/// Circular button used by the counter controls.
 ///
-/// Este widget foi separado da tela principal para:
-/// - evitar código repetido;
-/// - facilitar ajustes visuais;
-/// - permitir reutilização em outras partes do aplicativo no futuro.
+/// This widget was separated from the main screen to:
+/// - avoid repeated code;
+/// - facilitate visual adjustments;
+/// - allow reuse in other parts of the application in the future.
 class CounterButton extends StatelessWidget {
-  /// Ícone exibido dentro do botão.
+  /// Icon displayed inside the button.
   final IconData icon;
 
-  /// Função executada quando o usuário toca no botão.
+  /// Function executed when the user taps the button.
   final VoidCallback onPressed;
 
-  /// Define se o botão é a ação principal.
+  /// Defines whether the button is the primary action.
   ///
-  /// O botão de adicionar (+) recebe destaque amarelo.
-  /// O botão de remover (-) recebe uma cor secundária.
+  /// The add button (+) gets yellow highlighting.
+  /// The remove button (-) gets a secondary color.
   final bool isPrimary;
 
-  /// Construtor do botão.
+  /// Button constructor.
   const CounterButton({
     super.key,
     required this.icon,
@@ -31,43 +31,43 @@ class CounterButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      // Tamanho dos botões.
+      // Button size.
       width: 110,
       height: 110,
 
       child: ElevatedButton(
-        // Adiciona a resposta tátil suave ao toque antes de executar a ação
+        // Adds a light haptic feedback upon tap before executing the action.
         onPressed: () {
           HapticFeedback.lightImpact();
           onPressed();
         },
 
-        // Remove o preenchimento interno padrão do botão.
+        // Removes the default internal padding of the button.
         style: ElevatedButton.styleFrom(
           padding: EdgeInsets.zero,
 
-          // Botão perfeitamente circular.
+          // Perfectly circular button.
           shape: const CircleBorder(),
 
-          // Define a cor conforme o tipo de ação.
+          // Defines the color according to the action type.
           backgroundColor: isPrimary
-              ? const Color(0xFFFFC107) // Amarelo Idea36 (botão +)
-              : const Color(0xFFF5F5F5), // Cinza Claro (botão -)
+              ? const Color(0xFFFFC107) // Idea36 Yellow (+ button)
+              : const Color(0xFFF5F5F5), // Light Gray (- button)
 
-          // Remove sombra forte para manter o estilo minimalista.
+          // Removes strong shadow to maintain a minimalist style.
           elevation: 0,
 
-          // Define o comportamento visual durante o toque.
+          // Defines the visual behavior during the tap.
           overlayColor: Colors.black12,
         ),
 
         child: Icon(
           icon,
 
-          // Tamanho do símbolo + ou -.
+          // Size of the + or - symbol.
           size: 36,
 
-          // Cor do símbolo + ou -.
+          // Color of the + or - symbol.
           color: const Color(0xFF5B4300),
         ),
       ),

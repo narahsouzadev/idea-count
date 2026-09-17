@@ -1,52 +1,52 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart'; // 1. IMPORTANTE: Import necessário para o SystemChrome
+import 'package:flutter/services.dart'; // 1. IMPORTANT: Required import for SystemChrome
 
 import 'pages/counter_page.dart';
 import 'theme/app_theme.dart';
 
-/// Ponto de entrada da aplicação.
+/// Entry point of the application.
 ///
-/// Toda aplicação Flutter inicia sua execução por esta função.
-/// Ela é responsável por iniciar o widget principal do aplicativo.
-void main() async { // 2. Adicionado 'async' para aguardar as configurações do sistema
-  // Garante a inicialização das ligações do Flutter com a plataforma nativa
+/// Every Flutter application starts its execution from this function.
+/// It is responsible for initializing the main application widget.
+void main() async { // 2. Added 'async' to wait for system configurations
+  // Ensures initialization of Flutter bindings with the native platform
   WidgetsFlutterBinding.ensureInitialized();
 
-  // 3. Bloqueia a orientação do aplicativo exclusivamente para Modo Retrato (Portrait)
+  // 3. Locks the application orientation exclusively to Portrait mode
   await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
   ]);
   runApp(const IdeaCountApp());
 }
 
-/// Widget raiz da aplicação.
+/// Root widget of the application.
 ///
-/// Sua única responsabilidade é configurar o aplicativo:
-/// - nome;
-/// - tema global;
-/// - tela inicial.
+/// Its sole responsibility is to configure the application:
+/// - name;
+/// - global theme;
+/// - initial screen.
 ///
-/// Nenhuma regra de negócio deve ficar aqui.
+/// No business rules should reside here.
 class IdeaCountApp extends StatelessWidget {
-  /// Construtor padrão.
+  /// Default constructor.
   const IdeaCountApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      // Remove a faixa "DEBUG" exibida durante o desenvolvimento.
+      // Removes the "DEBUG" banner displayed during development.
       debugShowCheckedModeBanner: false,
 
-      // Nome da aplicação.
+      // Application name.
       title: 'Idea Count',
 
-      // Tema global da aplicação.
+      // Global application theme.
       //
-      // Toda configuração visual (cores, tipografia e estilos)
-      // ficará centralizada em app_theme.dart.
+      // All visual configurations (colors, typography, and styles)
+      // will be centralized in app_theme.dart.
       theme: AppTheme.lightTheme,
 
-      // Primeira tela exibida ao iniciar o aplicativo.
+      // First screen displayed when the application starts.
       home: const CounterPage(),
     );
   }
