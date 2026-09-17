@@ -56,18 +56,29 @@ class _CounterDisplayState extends State<CounterDisplay>
   }
 
   /// Executes the back-and-forth cycle of the scale animation.
+  ///
+  /// Stops any in-progress animation before starting to prevent
+  /// overlapping async chains on rapid taps.
   Future<void> _triggerScale(bool isIncrement) async {
     _scaleTarget = isIncrement ? 1.08 : 0.92;
-    await _scaleController.forward(from: 0.0);
+    _scaleController
+      ..stop()
+      ..reset();
+    await _scaleController.forward();
 
-    // Mandatory lifecycle check before asynchronous reversal.
     if (!mounted) return;
     _scaleController.reverse();
   }
 
   /// Executes the back-and-forth cycle of the jump animation.
+  ///
+  /// Stops any in-progress animation before starting to prevent
+  /// overlapping async chains on rapid taps.
   Future<void> _triggerJump() async {
-    await _jumpController.forward(from: 0.0);
+    _jumpController
+      ..stop()
+      ..reset();
+    await _jumpController.forward();
 
     if (!mounted) return;
     _jumpController.reverse();
