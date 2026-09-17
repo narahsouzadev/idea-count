@@ -47,14 +47,16 @@ class _CounterPageState extends State<CounterPage> {
   }
 
   void _increment() {
-    setState(() => _count++);
-    _saveCounter(_count);
+    final newCount = _count + 1;
+    setState(() => _count = newCount);
+    _saveCounter(newCount);
   }
 
   void _decrement() {
     if (_count > 0) {
-      setState(() => _count--);
-      _saveCounter(_count);
+      final newCount = _count - 1;
+      setState(() => _count = newCount);
+      _saveCounter(newCount);
     }
   }
 
