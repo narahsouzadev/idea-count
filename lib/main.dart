@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart'; // 1. IMPORTANT: Required import for SystemChrome
+import 'package:flutter/services.dart';
 
 import 'pages/counter_page.dart';
 import 'theme/app_theme.dart';
@@ -8,11 +8,11 @@ import 'theme/app_theme.dart';
 ///
 /// Every Flutter application starts its execution from this function.
 /// It is responsible for initializing the main application widget.
-void main() async { // 2. Added 'async' to wait for system configurations
+void main() async {
   // Ensures initialization of Flutter bindings with the native platform
   WidgetsFlutterBinding.ensureInitialized();
 
-  // 3. Locks the application orientation exclusively to Portrait mode
+  // Locks the application orientation exclusively to Portrait mode.
   await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
   ]);
