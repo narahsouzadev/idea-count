@@ -3,6 +3,7 @@ import '../widgets/counter_button.dart';
 import '../widgets/counter_display.dart';
 import '../widgets/reset_confirmation_dialog.dart';
 import '../services/counter_storage_service.dart';
+import '../services/sound_service.dart';
 
 /// Main screen of Idea Count.
 ///
@@ -27,12 +28,19 @@ class CounterPage extends StatefulWidget {
 /// whenever this value changes.
 class _CounterPageState extends State<CounterPage> {
   final CounterStorageService _storageService = CounterStorageService();
+  final SoundService _soundService = SoundService();
   int _count = 0;
 
   @override
   void initState() {
     super.initState();
     _loadCounter();
+  }
+
+  @override
+  void dispose() {
+    _soundService.dispose();
+    super.dispose();
   }
 
   Future<void> _loadCounter() async {
@@ -51,6 +59,7 @@ class _CounterPageState extends State<CounterPage> {
     final newCount = _count + 1;
     setState(() => _count = newCount);
     _saveCounter(newCount);
+    _soundService.playIncrement();
   }
 
   void _decrement() {
@@ -58,6 +67,7 @@ class _CounterPageState extends State<CounterPage> {
       final newCount = _count - 1;
       setState(() => _count = newCount);
       _saveCounter(newCount);
+      _soundService.playDecrement();
     }
   }
 
